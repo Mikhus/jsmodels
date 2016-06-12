@@ -1,47 +1,45 @@
 const Validator = require('./Validator');
 
+function redefine(value, index) {
+    Validator.validate(value, this.schema.definition.items, this.schema.strict);
+
+    Object.defineProperty(this, index, {
+        configurable: true,
+        enumerable: true,
+        get() {
+            return value;
+        },
+        set(value) {
+            if (Validator.validate(value, this.schema.definition.items, this.schema.strict)) {
+                Object.defineProperty(this, index, {
+                    configurable: true,
+                    enumerable: true,
+                    writable: true,
+                    value: value
+                });
+
+                this.configureItem(value, index);
+            }
+        }
+    });
+}
+
 class ValueArray extends Array {
 
     constructor() {
-        let args = 
-        super(...arguments);
+        let args = Aray.prototype.slice.call(arguments);
+        let schema = args.shift();
+
+        super(...args);
 
         Object.defineProperty(this, 'schema', {
             configurable: true,
             enumerable: false,
             writable: true,
-            value: null
+            value: schema
         });
-    }
 
-    configureItem(value, index) {
-        Validator.validate(value, this.schema);
-
-        Object.defineProperty(this, index, {
-            configurable: true,
-            enumerable: true,
-            get() {
-                return value;
-            },
-            set(value) {
-                if (Validator.validate(value, this.schema)) {
-                    Object.defineProperty(this, index, {
-                        configurable: true,
-                        enumerable: true,
-                        writable: true,
-                        value: value
-                    });
-
-                    this.configureItem(value, index);
-                }
-            }
-        });
-    }
-
-    configure(schema) {
-        this.schema = schema;
-
-        this.forEach(this.configureItem.bind(this));
+        this.forEach(redefine.bind(this));
     }
 
     push() {

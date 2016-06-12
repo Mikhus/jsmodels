@@ -1,4 +1,5 @@
 const ValueObject = require('./ValueObject');
+
 let schemaTypes;
 
 class Schema {
@@ -45,7 +46,6 @@ class Schema {
     }
 
     define(definition, canonical = false) {
-        this.userDefinition = definition;
         this.definition = canonical ? definition : Schema.normilize(definition);
     }
 
@@ -274,7 +274,7 @@ class Schema {
 
     static castObject(value, definition) {
         if (value === Object) {
-            return new ValueObject({}, new Schema({}, canonical), true);
+            return new ValueObject({}, new Schema({}, true), true);
         }
 
         return definition ?
@@ -321,6 +321,10 @@ class Schema {
     static set types(types) {}
     static resetTypes() {
         schemaTypes = null;
+    }
+
+    static create() {
+        return new Schema(...arguments);
     }
 }
 

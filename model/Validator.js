@@ -2,14 +2,8 @@ const Schema = require('./Schema');
 const Log = require('./Log');
 
 class Validator {
-    static validate(value, schema = new Schema) {
-        if (!schema.definition || !schema.typeOf) {
-            // invalid schema, pass through validation successfully
-            return true;
-        }
-
-        let type = schema.typeOf(value);
-        let definition = schema.definition.properties || schema.definition.items;
+    static validate(value, definition, strict = false) {
+        let type = Schema.typeOf(value);
 
         if (definition && type !== definition.type) {
             let error = new TypeError(
@@ -17,7 +11,7 @@ class Validator {
                 '" but "' + type + '" type given!'
             );
 
-            if (schema.strict) {
+            if (strict) {
                 throw error;
             }
 

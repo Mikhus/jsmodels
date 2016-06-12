@@ -25,7 +25,7 @@ class ValueObject {
                     return data[property];
                 },
                 set(value) {
-                    if (Validator.validate(value, schema)) {
+                    if (Validator.validate(value, properties[property], schema.strict)) {
                         data[property] = schema.cast(property, value);
                     }
                 },

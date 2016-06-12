@@ -3,6 +3,15 @@ const model = require('./model');
 let Log = model.Log;
 
 class BaseModel {
+
+    static create(modelClass, definition) {
+
+    }
+
+
+
+
+
     constructor(data = {}) {
         if (this.constructor.name === 'BaseModel') {
             throw new TypeError('Abstract class can not be instantiated directly!');
@@ -38,7 +47,7 @@ class BaseModel {
         throw new TypeError('schema() must be implemented in child class!')
     }
 
-    toJSON(pretty = false) {
+    toJSON(pretty) {
         if (pretty) {
             return JSON.stringify(this.data, null, 2);
         }
