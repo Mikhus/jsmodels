@@ -35,10 +35,6 @@ describe('Schema', () => {
 
     });
 
-    describe('Schema.validate()', () => {
-
-    });
-
     describe('Schema.constructor()', () => {
 
     });
