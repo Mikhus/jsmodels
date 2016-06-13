@@ -9,12 +9,16 @@
   ],
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^2.12.0",
     "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-istanbul": "^1.0.0",
+    "gulp-mocha": "^2.2.0",
     "istanbul": "^0.4.3",
     "mocha": "^2.5.3",
     "sinon": "^1.17.4"
   },
   "scripts": {
-    "test": "istanbul cover node_modules/mocha/bin/_mocha"
+    "test": "gulp test"
   }
 }
