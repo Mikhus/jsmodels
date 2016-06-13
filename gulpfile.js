@@ -17,7 +17,7 @@ gulp.task('pre:test', ['eslint'], () =>
 );
 
 gulp.task('test', ['pre:test'], () =>
-    gulp.src(['test/*.js'])
+    gulp.src(['test/**/*.js'])
         .pipe(mocha())
         .pipe(istanbul.writeReports())
         .pipe(istanbul.enforceThresholds({
