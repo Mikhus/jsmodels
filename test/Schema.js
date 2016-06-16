@@ -30,14 +30,6 @@ describe('Schema', () => {
         });
     });
 
-    describe('Schema.parse()', () => {
-
-    });
-
-    describe('Schema.typeOf()', () => {
-
-    });
-
     describe('Schema.definitionOf()', () => {
         it('should return canonical schema definition of the given schema ' +
             'object', () =>
@@ -71,11 +63,23 @@ describe('Schema', () => {
         });
     });
 
-    describe('Schema.toJSON()', () => {
+    describe('Schema.root()', () => {
 
     });
 
-    describe('Schema.constructor()', () => {
+    describe('Schema.cast()', () => {
+
+    });
+
+    describe('Schema.parse()', () => {
+
+    });
+
+    describe('Schema.typeOf()', () => {
+
+    });
+
+    describe('Schema.toJSON()', () => {
 
     });
 });
