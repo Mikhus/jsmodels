@@ -32,7 +32,8 @@ let level, prefixed, showDateTime, logger;
 describe('Log', () => {
     let Log;
 
-    describe('Load Module', () => {
+    // turn it off currently until browser testing started
+    xdescribe('Load Module', () => {
         it('log driver should be initialized from window console by default ' +
             'if window is defined', () =>
         {

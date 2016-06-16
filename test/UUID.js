@@ -22,7 +22,8 @@ function $require(fileName, context) {
 describe('UUID', () => {
     let UUID;
 
-    describe('Load Module', () => {
+    // turn it off currently until browser testing started
+    xdescribe('Load Module', () => {
         it('should use modern random function from window if it is ' +
             'defined', () =>
         {
