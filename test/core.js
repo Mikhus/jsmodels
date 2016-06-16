@@ -85,4 +85,40 @@ describe('Core API', () => {
             expect(core.nextKey({'2.35': 1})).to.be.equal(0);
         });
     });
+
+    describe('core.isPlainObject()', () => {
+        it('should return true if given path in a given object ' +
+            'properties', () =>
+        {
+            let obj = {
+                a: { b: { c: { d: '' } } },
+                2.35: undefined,
+                75: null
+            };
+            obj[void 0] = { '': 123 };
+
+            expect(core.hasProperty(obj, 'a.b.c.d')).to.be.true;
+            expect(core.hasProperty(obj, 2.35)).to.be.true;
+            expect(core.hasProperty(obj, 75)).to.be.true;
+            expect(core.hasProperty(obj, undefined)).to.be.true;
+        });
+
+        it('should return false if given object is not defined', () => {
+            expect(core.hasProperty()).to.be.false;
+            expect(core.hasProperty(void 0)).to.be.false;
+            expect(core.hasProperty(undefined)).to.be.false;
+        });
+
+        it('should return false if given path is not in a given object', () => {
+            let obj = {
+                a: { b: { c: { d: '' } } },
+                2.35: undefined,
+                75: null
+            };
+
+            expect(core.hasProperty(obj, 'a.c.d.b')).to.be.false;
+            expect(core.hasProperty(obj, 3.15)).to.be.false;
+            expect(core.hasProperty(obj, undefined)).to.be.false;
+        });
+    });
 });
