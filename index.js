@@ -3,6 +3,5 @@ module.exports = Object.assign(require('./lib/BaseModel'), {
     Observer: require('./lib/Observer'),
     EventEmitter: require('./lib/EventEmitter'),
     Log: require('./lib/Log'),
-    UUID: require('./lib/UUID'),
-    Errors: require('./lib/Errors')
+    UUID: require('./lib/UUID')
 }, require('./lib/core'));
