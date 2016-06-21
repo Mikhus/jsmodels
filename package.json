@@ -21,5 +21,6 @@
   },
   "scripts": {
     "test": "gulp test"
-  }
+  },
+  "main": "index.js"
 }
