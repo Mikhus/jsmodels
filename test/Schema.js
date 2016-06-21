@@ -9,7 +9,7 @@ const schemaKeywords = [
     'items',
     'properties',
     'default',
-    'validator'
+    'validate'
 ];
 
 describe('Schema', () => {
