@@ -74,18 +74,6 @@ describe('Core API', () => {
         });
     });
 
-    describe('core.nextKey()', () => {
-        it('should return number representing next possible unique numeric ' +
-            'property in the given object', () =>
-        {
-            expect(core.nextKey({})).to.be.equal(0);
-            expect(core.nextKey({0: 0})).to.be.equal(1);
-            expect(core.nextKey({5: 5})).to.be.equal(6);
-            expect(core.nextKey({a: 1, 7: 12, b: 3})).to.be.equal(8);
-            expect(core.nextKey({'2.35': 1})).to.be.equal(0);
-        });
-    });
-
     describe('core.isPlainObject()', () => {
         it('should return true if given path in a given object ' +
             'properties', () =>
