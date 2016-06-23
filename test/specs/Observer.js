@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const BaseModel = require('../lib/BaseModel');
+const Observer = require('../../lib/Observer');
 
-describe('BaseModel', () => {
+describe('Observer', () => {
 
 });

@@ -40,7 +40,7 @@ describe('Log', () => {
             logger = driver();
 
             let path = fs.realpathSync(
-                fs.realpathSync(__dirname) + '/../lib/Log.js');
+                fs.realpathSync(__dirname) + '/../../lib/Log.js');
 
             Log = $require(path, { window: { console: logger } });
 
@@ -53,7 +53,7 @@ describe('Log', () => {
             logger = driver();
 
             let path = fs.realpathSync(
-                fs.realpathSync(__dirname) + '/../lib/Log.js');
+                fs.realpathSync(__dirname) + '/../../lib/Log.js');
 
             Log = $require(path, { global: { console: logger } });
 
@@ -66,7 +66,7 @@ describe('Log', () => {
             logger = driver();
 
             let path = fs.realpathSync(
-                fs.realpathSync(__dirname) + '/../lib/Log.js');
+                fs.realpathSync(__dirname) + '/../../lib/Log.js');
 
             Log = $require(path);
 
@@ -77,7 +77,7 @@ describe('Log', () => {
 
     describe('API', () => {
         before(() => {
-            Log = require('../lib/Log');
+            Log = require('../../lib/Log');
 
             level = Log.LEVEL;
             prefixed = Log.prefixed;

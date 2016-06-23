@@ -28,7 +28,7 @@ describe('UUID', () => {
             'defined', () =>
         {
             let path = fs.realpathSync(
-                fs.realpathSync(__dirname) + '/../lib/UUID.js');
+                fs.realpathSync(__dirname) + '/../../lib/UUID.js');
             let context = {
                 window: {
                     crypto: {
@@ -46,7 +46,7 @@ describe('UUID', () => {
     });
 
     describe('API', () => {
-        UUID = require('../lib/UUID');
+        UUID = require('../../lib/UUID');
 
         const maxTimeout = 10000;
 
@@ -80,11 +80,11 @@ describe('UUID', () => {
             expect(regex.test(UUID())).to.be.true;
         });
 
-        it('should be unique each time generated (per 1,000,000 of test ' +
+        it('should be unique each time generated (per 100,000 of test ' +
             'calls)', () =>
         {
             let keyStore = {};
-            let steps = 1000000;
+            let steps = 100000;
 
             for (let i = 0; i < steps; i++) {
                 keyStore[UUID()] = 1;

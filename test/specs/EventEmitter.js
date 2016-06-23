@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const Emitter = require('events');
-const EventEmitter = require('../lib/EventEmitter');
+const EventEmitter = require('../../lib/EventEmitter');
 
 describe('EventEmitter', () => {
     let emitter;
