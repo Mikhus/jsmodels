@@ -6,7 +6,8 @@ module.exports = [{
             "name": "firstName",
             "type": "string",
             "required": true,
-            "default": ""
+            "default": "",
+            "validate": () => true
         },
         "lastName": {
             "name": "lastName",
@@ -18,7 +19,8 @@ module.exports = [{
             "name": "email",
             "type": "string",
             "required": false,
-            "default": ""
+            "default": "",
+            "validate": "email"
         },
         "rates": {
             "name": "rates",
