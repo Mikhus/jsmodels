@@ -345,9 +345,49 @@ describe('Observer', () => {
                 subscriber
             );
 
-            console.log(data, errors);
-
             expect(data).not.to.have.property('email');
+        });
+
+        it('should not modify fields in target if them not defined in ' +
+            'source', () =>
+        {
+            Observer.options.fullTrace = true;
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: 'John',
+                lastName: 'Smith',
+                email: 'john@smith.com',
+                rates: [1, 2, 3],
+                addresses: [{
+                    country: 'United States',
+                    city: 'Florence, Alabama',
+                    street: '110 West College Street'
+                }]
+            }, schema, errors, subscriber);
+            let newData = {
+                rates: [2, 3],
+                addresses: [{
+                    street: '112 West College Street'
+                }]
+            };
+
+            Observer.merge(
+                data,
+                newData,
+                schema,
+                errors,
+                subscriber
+            );
+
+            // console.log(data, errors);
+
+            expect(data.email).to.be.equal('john@smith.com');
+            expect(data.rates).to.be.eql([2, 3]);
+            expect(data.addresses[0].street).to.be.equal('112 West College Street');
+            expect(data.addresses[0].country).to.be.equal('United States');
+            expect(data.addresses[0].city).to.be.equal('Florence, Alabama');
         });
 
         it('should not loose reference to initial data object on merge', () => {
