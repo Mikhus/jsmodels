@@ -93,9 +93,7 @@ describe('UUID', () => {
             expect(Object.keys(keyStore).length).to.be.equal(steps);
         }).timeout(maxTimeout); // increase to 10 seconds;
 
-        it('should generate 100,000 identifiers in less than half of a ' +
-            'second', () =>
-        {
+        it('should generate 100,000 identifiers in less than a second', () => {
             let steps = 100000;
             let end, uuid;
             let start = new Date().getTime();
@@ -106,7 +104,7 @@ describe('UUID', () => {
 
             end = new Date().getTime();
 
-            expect(end - start).to.be.below(500);
+            expect(end - start).to.be.below(1000);
         }).timeout(maxTimeout);
     });
 });
