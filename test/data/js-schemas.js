@@ -6,10 +6,7 @@ module.exports = [{
     'addresses': Array.of({
         'street': String,
         'city': String,
-        '?country': {
-            code: String,
-            name: String
-        }
+        '?country': String
     })
 }, [{
     'firstName': String,

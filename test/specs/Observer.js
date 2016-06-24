@@ -182,7 +182,7 @@ describe('Observer', () => {
 
             data.addresses.push({});
 
-            expect(errors.length).to.be.equal(3);
+            expect(errors.length).to.be.equal(2);
             errors.forEach(err =>
                 expect(err.code).to.be.equal(Observer.ERROR_REQUIRED));
         });
@@ -259,6 +259,97 @@ describe('Observer', () => {
     });
 
     describe('Observer.merge()', () => {
+        it('should throw if invalid schema given', () => {
+            expect(() => Observer.merge()).to.throw(TypeError);
+        });
+
+        it('should throw if invalid subscriber given', () => {
+            expect(() => Observer.merge('', '', new Schema(''))).to.throw(TypeError);
+        });
+
+        it('should throw if it is attempt to merge primitive values', () =>
+        {
+            expect(() => Observer.merge(
+                '', '', Schema.create(''), [], new Subscriber()
+            )).to.throw(TypeError);
+        });
+
+        it('should raise error without target modification if given data ' +
+            'objects are different type', () =>
+        {
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            }, schema, errors, subscriber);
+            let newData = [{
+                firstName: 'John',
+                lastName: 'Smith',
+                email: 'john@smit.com',
+                rates: [1, 2, 3],
+                addresses: [{
+                    country: 'United States',
+                    city: 'Florence, Alabama',
+                    street: '110 West College Street'
+                }]
+            }];
+
+            Observer.merge(
+                data,
+                newData,
+                schema,
+                errors,
+                subscriber
+            );
+
+            expect(errors.length).to.be.equal(1);
+            expect(errors[0].code).to.be.equal(Observer.ERROR_TYPE);
+            expect(data).not.to.be.eql(newData);
+        });
+
+        it('should remove properties marked as undefined in source from ' +
+            'target', () =>
+        {
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            }, schema, errors, subscriber);
+            let newData = {
+                firstName: 'John',
+                lastName: 'Smith',
+                email: undefined,
+                rates: [1, 2, 3],
+                addresses: [{
+                    country: 'United States',
+                    city: 'Florence, Alabama',
+                    street: '110 West College Street'
+                }]
+            };
+
+            Observer.merge(
+                data,
+                newData,
+                schema,
+                errors,
+                subscriber
+            );
+
+            console.log(data, errors);
+
+            expect(data).not.to.have.property('email');
+        });
+
         it('should not loose reference to initial data object on merge', () => {
             let schema = Schema.create(jsSchemas[0]);
             let errors = [];

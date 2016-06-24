@@ -307,6 +307,7 @@ describe('Schema', () => {
             expect(schema.toJSON(2)).to.be.a('string');
             expect(() => JSON.parse(schema.toJSON(2))).to.not.throw(Error);
         });
+
         it('should be automatically called on serialization', () => {
             let schema = new Schema(jsSchemas[0]);
             let spy = sinon.spy(schema, 'toJSON');
@@ -319,7 +320,15 @@ describe('Schema', () => {
     });
 
     describe('Schema.parse()', () => {
+        it('should mark properties, begining with "?" char as not ' +
+            'required', () =>
+        {
+            let schema = Schema.parse(jsSchemas[0]);
 
+            expect(schema.properties.email.required).to.be.false;
+            expect(schema.properties.addresses.items.properties.country.required)
+                .to.be.false;
+        });
     });
 
     describe('Schema.typeOf()', () => {
