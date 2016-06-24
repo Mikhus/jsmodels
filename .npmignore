@@ -4,3 +4,4 @@ debug.js
 coverage
 .eslintrc
 gulpfile.js
+.travis.yml
