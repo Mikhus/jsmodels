@@ -50,7 +50,7 @@ describe('UUID', () => {
 
         const maxTimeout = 10000;
 
-        it('should be function type', () => {
+        it('should be a function type', () => {
             expect(UUID).to.be.function;
         });
 

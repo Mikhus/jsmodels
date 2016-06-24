@@ -166,7 +166,7 @@ describe('Observer', () => {
             expect(errors[0].columnNumber).to.be.equal(28);
         });
 
-        it('should raise errors for internal recursively for complex ' +
+        it('should raise errors for internals recursively for complex ' +
             'schemas', () =>
         {
             let schema = Schema.create(jsSchemas[0]);
@@ -186,9 +186,113 @@ describe('Observer', () => {
             errors.forEach(err =>
                 expect(err.code).to.be.equal(Observer.ERROR_REQUIRED));
         });
+
+        it('should not affect methods on array', () => {
+            let splice = sinon.spy(Array.prototype, 'splice');
+            let push = sinon.spy(Array.prototype, 'push');
+            let unshift = sinon.spy(Array.prototype, 'unshift');
+            let fill = sinon.spy(Array.prototype, 'fill');
+            let pop = sinon.spy(Array.prototype, 'pop');
+
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            }, schema, errors, subscriber);
+
+            data.rates.push(0.1);
+            expect(push.called).to.be.true;
+            expect(data.rates).to.be.eql([0.1]);
+            push.restore();
+
+            data.rates.splice(0, 1, 1, 2, 3, 4, 5, 6, 7);
+            expect(splice.called).to.be.true;
+            expect(data.rates).to.be.eql([1, 2, 3, 4, 5, 6, 7]);
+            splice.restore();
+
+            data.rates.unshift(0);
+            expect(unshift.called).to.be.true;
+            expect(data.rates).to.be.eql([0, 1, 2, 3, 4, 5, 6, 7]);
+            unshift.restore();
+
+            data.rates.fill(0);
+            expect(fill.called).to.be.true;
+            expect(data.rates).to.be.eql([0, 0, 0, 0, 0, 0, 0, 0]);
+            fill.restore();
+
+            data.rates.pop();
+            expect(pop.called).to.be.true;
+            expect(data.rates).to.be.eql([0, 0, 0, 0, 0, 0, 0]);
+            pop.restore();
+        });
+
+        it('should disallow invalid value assignments on data change', () => {
+            Observer.options.allowInvalid = false;
+
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            }, schema, errors, subscriber);
+
+            data.firstName = 'John';
+            expect(data.firstName).to.be.equal('John');
+
+            data.firstName = 20;
+            expect(data.firstName).to.be.equal('John');
+
+            Observer.options.allowInvalid = true;
+
+            data.firstName = 20;
+            expect(data.firstName).to.be.equal(20);
+        });
     });
 
     describe('Observer.merge()', () => {
+        it('should not loose reference to initial data object on merge', () => {
+            let schema = Schema.create(jsSchemas[0]);
+            let errors = [];
+            let subscriber = new Subscriber();
+            let data = Observer.observe({
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            }, schema, errors, subscriber);
+            let newData = {
+                firstName: 'John',
+                lastName: 'Smith',
+                email: 'john@smit.com',
+                rates: [1, 2, 3],
+                addresses: [{
+                    country: 'United States',
+                    city: 'Florence, Alabama',
+                    street: '110 West College Street'
+                }]
+            };
 
+            let result = Observer.merge(
+                data,
+                newData,
+                schema,
+                errors,
+                subscriber
+            );
+
+            expect(result).to.be.equal(data);
+            expect(result).not.to.be.equal(newData);
+            expect(result).to.be.eql(newData);
+        });
     });
 });
