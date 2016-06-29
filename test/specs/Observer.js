@@ -380,8 +380,6 @@ describe('Observer', () => {
                 subscriber
             );
 
-            // console.log(data, errors);
-
             expect(data.email).to.be.equal('john@smith.com');
             expect(data.rates).to.be.eql([2, 3]);
             expect(data.addresses[0].street).to.be.equal('112 West College Street');

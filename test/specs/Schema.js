@@ -52,7 +52,6 @@ function validate(schema) {
     expect(schema).to.have.property('parent');
     expect(typeof schema.parent).to.be.equal('object');
 
-    if (schema.required === void 0) console.log(schema);
     expect(schema).to.have.property('required');
     expect(schema.required).to.be.a('boolean');
 

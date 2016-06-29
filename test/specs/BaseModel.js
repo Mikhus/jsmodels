@@ -99,7 +99,6 @@ describe('BaseModel', () => {
 
         it('should simply replace value if model data is primitive', () => {
             let model = new Model('');
-            console.log(model.schema, model.isPrimitive)
 
             expect(model.data).to.be.equal('');
 
