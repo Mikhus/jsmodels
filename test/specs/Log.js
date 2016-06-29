@@ -2,6 +2,9 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const fs = require('fs');
 const vm = require('vm');
+const isBrowser = typeof window !== 'undefined' &&
+    typeof navigator !== 'undefined';
+
 
 function $require(fileName, context) {
     let code = fs.readFileSync(fileName);
@@ -123,7 +126,14 @@ describe('Log', () => {
                 expect(Log.DEBUG).to.equal(16);
             });
             it('should be read-only and do not throw error on change', () => {
-                expect(() => Log.DEBUG = 1).to.not.throw(Error);
+                if (isBrowser) {
+                    expect(() => Log.DEBUG = 1).to.throw(Error);
+                }
+
+                else {
+                    expect(() => Log.DEBUG = 1).to.not.throw(Error);
+                }
+
                 expect(Log.DEBUG).to.equal(16);
             });
         });
@@ -133,7 +143,14 @@ describe('Log', () => {
                 expect(Log.INFO).to.equal(8);
             });
             it('should be read-only and do not throw error on change', () => {
-                expect(() => Log.INFO = 1).to.not.throw(Error);
+                if (isBrowser) {
+                    expect(() => Log.INFO = 1).to.throw(Error);
+                }
+
+                else {
+                    expect(() => Log.INFO = 1).to.not.throw(Error);
+                }
+
                 expect(Log.INFO).to.equal(8);
             });
         });
@@ -145,7 +162,14 @@ describe('Log', () => {
             it('should be read-only and do not throw error on change', () => {
                 Log.LEVEL |= Log.DEBUG;
 
-                expect(() => Log.WARN = 1).to.not.throw(Error);
+                if (isBrowser) {
+                    expect(() => Log.WARN = 1).to.throw(Error);
+                }
+
+                else {
+                    expect(() => Log.WARN = 1).to.not.throw(Error);
+                }
+
                 expect(Log.WARN).to.equal(4);
             });
         });
@@ -155,7 +179,14 @@ describe('Log', () => {
                 expect(Log.ERROR).to.equal(2);
             });
             it('should be read-only and do not throw error on change', () => {
-                expect(() => Log.ERROR = 1).to.not.throw(Error);
+                if (isBrowser) {
+                    expect(() => Log.ERROR = 1).to.throw(Error);
+                }
+
+                else {
+                    expect(() => Log.ERROR = 1).to.not.throw(Error);
+                }
+
                 expect(Log.ERROR).to.equal(2);
             });
         });
@@ -165,7 +196,14 @@ describe('Log', () => {
                 expect(Log.NONE).to.equal(0);
             });
             it('should be read-only and do not throw error on change', () => {
-                expect(() => Log.NONE = 1).to.not.throw(Error);
+                if (isBrowser) {
+                    expect(() => Log.NONE = 1).to.throw(Error);
+                }
+
+                else {
+                    expect(() => Log.NONE = 1).to.not.throw(Error);
+                }
+
                 expect(Log.NONE).to.equal(0);
             });
         });

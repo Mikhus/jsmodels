@@ -5,6 +5,8 @@ const Schema = require('../../lib/Schema');
 const Log = require('../../lib/Log');
 const Model = require('../mocks/Model');
 const jsSchemas = require('../data/js-schemas');
+const isBrowser = typeof window !== 'undefined' &&
+    typeof navigator !== 'undefined';
 
 describe('BaseModel', () => {
     it('should be abstract and throw on attempt to directly instantiate', () =>
@@ -44,7 +46,14 @@ describe('BaseModel', () => {
 
             let oldId = model.uuid;
 
-            expect(() => model.uuid = '123').not.to.throw(Error);
+            if (isBrowser) {
+                expect(() => model.uuid = '123').to.throw(Error);
+            }
+
+            else {
+                expect(() => model.uuid = '123').not.to.throw(Error);
+            }
+
             expect(model.uuid).to.be.equal(oldId);
         });
 
@@ -52,7 +61,14 @@ describe('BaseModel', () => {
             let model = new Model(jsSchemas[0]);
             let oldId = model.uuid;
 
-            expect(() => { delete model.uuid; }).not.to.throw(Error);
+            if (isBrowser) {
+                expect(() => { delete model.uuid; }).to.throw(Error);
+            }
+
+            else {
+                expect(() => { delete model.uuid; }).not.to.throw(Error);
+            }
+
             expect(model.uuid).to.be.equal(oldId);
         });
     });
