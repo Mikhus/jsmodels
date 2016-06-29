@@ -126,4 +126,20 @@ describe('EventEmitter', () => {
             });
         });
     });
+
+    describe('EventEmitter.destroy()', () => {
+        it('should un-register all events', () => {
+            emitter.on('one', () => {}).on('two', () => {}).on('three', () => {});
+
+            expect(emitter._events.one).not.to.be.undefined;
+            expect(emitter._events.two).not.to.be.undefined;
+            expect(emitter._events.three).not.to.be.undefined;
+
+            emitter.destroy();
+
+            expect(emitter._events.one).to.be.undefined;
+            expect(emitter._events.two).to.be.undefined;
+            expect(emitter._events.three).to.be.undefined;
+        });
+    });
 });
