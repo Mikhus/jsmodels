@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const BaseModel = require('../../lib/BaseModel');
 const Schema = require('../../lib/Schema');
+const Log = require('../../lib/Log');
 const Model = require('../mocks/Model');
 const jsSchemas = require('../data/js-schemas');
 
@@ -133,6 +134,25 @@ describe('BaseModel', () => {
             let model = BaseModel.create(jsSchemas[0]);
             expect(model.constructor.name).to.be.equal('Model');
             expect(model).to.be.instanceof(BaseModel);
+        });
+
+        it('should log invalidate errors if debug mode is on', () => {
+            let oldLevel = Log.LEVEL;
+            let spy = sinon.spy(Log, 'debug');
+
+            Log.LEVEL = Log.DEBUG;
+
+            BaseModel.create(jsSchemas[0], {
+                firstName: 20,
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            });
+
+            expect(Log.debug.called).to.be.true;
+
+            Log.LEVEL = oldLevel;
         });
     });
 });
