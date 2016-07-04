@@ -42,5 +42,8 @@
   "scripts": {
     "test": "gulp test"
   },
-  "main": "index.js"
+  "main": "index.js",
+  "dependencies": {
+    "ws": "^1.1.1"
+  }
 }
