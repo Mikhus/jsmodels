@@ -6,8 +6,10 @@ const Log = require('../../lib/Log');
 const Model = require('../mocks/Model');
 const jsSchemas = require('../data/js-schemas');
 const Channel = require('../../lib/Channel');
-const WebSocket = require('ws');
 
+if (typeof WebSocket === 'undefined') {
+    var WebSocket = require('ws');
+}
 const isBrowser = typeof window !== 'undefined' &&
     typeof navigator !== 'undefined';
 
@@ -270,7 +272,14 @@ describe('BaseModel', () => {
 
         it('should log invalidate errors if debug mode is on', () => {
             let oldLevel = Log.LEVEL;
+            let oldLogger = Log.logger;
+
             sinon.spy(Log, 'debug');
+            Log.logger = {
+                log() {},
+                warn() {},
+                error() {}
+            };
 
             Log.LEVEL = Log.DEBUG;
 
@@ -285,6 +294,7 @@ describe('BaseModel', () => {
             expect(Log.debug.called).to.be.true;
 
             Log.LEVEL = oldLevel;
+            Log.logger = oldLogger;
         });
     });
 });

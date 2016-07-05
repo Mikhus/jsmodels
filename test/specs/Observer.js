@@ -10,17 +10,18 @@ describe('Observer', () => {
         expect(Observer).to.have.property('options');
         expect(Observer.options).to.be.an('object');
     });
-    xit('should automatically merge options on assign', () => {
-        let spy = sinon.spy(Object, 'assign');
+    it('should automatically merge options on assign', () => {
+        sinon.spy(Object, 'assign');
 
         Observer.options = {};
 
-        expect(spy.called).to.be.true;
+        expect(Object.assign.called).to.be.true;
         expect(Observer.options).to.have.all.keys([
             'traceErrors',
             'fullTrace',
             'allowInvalid'
         ]);
+        Object.assign.restore();
     });
 
     describe('Observer.observe()', () => {
@@ -98,7 +99,7 @@ describe('Observer', () => {
             expect(spy.calledWith('invalidate', errors[0])).to.be.true;
         });
 
-        xit('should generate errors with full trace if specified', () => {
+        it('should generate errors with full trace if specified', () => {
             Observer.options.fullTrace = true;
 
             let schema = Schema.create(jsSchemas[0]);
@@ -146,7 +147,7 @@ describe('Observer', () => {
             Observer.options.fullTrace = false;
         });
         
-        xit('should raise error with the proper trace', () => {
+        it('should raise error with the proper trace', () => {
             let schema = Schema.create(jsSchemas[0]);
             let errors = [];
             let subscriber = new Subscriber();
@@ -161,7 +162,7 @@ describe('Observer', () => {
             data.firstName = 20;
 
             expect(errors[0].fileName).to.be.equal(__filename);
-            expect(errors[0].lineNumber).to.be.equal(161);
+            expect(errors[0].lineNumber).to.be.equal(162);
             expect(errors[0].columnNumber).to.be.equal(28);
         });
 
