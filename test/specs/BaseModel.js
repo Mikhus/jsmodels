@@ -5,8 +5,43 @@ const Schema = require('../../lib/Schema');
 const Log = require('../../lib/Log');
 const Model = require('../mocks/Model');
 const jsSchemas = require('../data/js-schemas');
+const Channel = require('../../lib/Channel');
+const WebSocket = require('ws');
+
 const isBrowser = typeof window !== 'undefined' &&
     typeof navigator !== 'undefined';
+
+function startWss(fn, port) {
+    let clients = {};
+    let wss = new WebSocket.Server({
+        port: port
+    });
+
+    wss.on('connection', ws => {
+        let id = new Date().getTime() + Math.random();
+
+        clients[id] = ws;
+
+        ws.on('message', message => {
+            let keys = Object.keys(clients);
+            let i = 0, s = keys.length;
+
+            for (; i < s; i++) {
+                clients[keys[i]].send(message);
+            }
+        });
+
+        ws.on('close', () => delete clients[id]);
+    });
+
+    setTimeout(fn, 500);
+
+    return wss;
+}
+
+function stopWss(wss) {
+    setTimeout(() => wss && wss.close && wss.close(), 500);
+}
 
 describe('BaseModel', () => {
     it('should be abstract and throw on attempt to directly instantiate', () =>
@@ -20,7 +55,8 @@ describe('BaseModel', () => {
 
     it('should accept schema definition and Schema as well', () => {
         expect(() => new Model(jsSchemas[0])).to.not.throw(Error);
-        expect(() => new Model(Schema.create(jsSchemas[0]))).to.not.throw(Error);
+        expect(() => new Model(Schema.create(jsSchemas[0])))
+            .to.not.throw(Error);
     });
 
     describe('BaseModel.uuid', () => {
@@ -142,6 +178,87 @@ describe('BaseModel', () => {
         });
     });
 
+    describe('BaseModel.get()', () => {
+        it('should return proper model\'s data value', () => {
+            let model = new Model(jsSchemas[0]);
+            let expected = {
+                firstName: '',
+                lastName: '',
+                email: '',
+                rates: [],
+                addresses: []
+            };
+
+            expect(model.get('firstName')).to.be.equal(model.data.firstName);
+            expect(model.get('firstName')).to.be.equal(expected.firstName);
+        });
+    });
+
+    describe('BaseModel.set()', () => {
+        it('should properly upsets model\'s value for given property', () => {
+            let model = new Model(jsSchemas[0]);
+
+            model.set('firstName', 'John');
+
+            expect(model.data.firstName).to.be.equal('John');
+            expect(model.get('firstName')).to.be.equal('John');
+        });
+    });
+
+    describe('BaseModel.toJSON()', () => {
+        it('should return proper plain serializable object representation',
+            () =>
+        {
+            let model = new Model(jsSchemas[0]);
+            let spy = sinon.spy(model, 'toJSON');
+            let jsonModel = model.toJSON();
+
+            expect(() => JSON.stringify(model)).to.not.throw(Error);
+            expect(spy.called).to.be.true;
+            expect(JSON.stringify(jsonModel))
+                .to.be.equal(
+                    JSON.stringify(JSON.parse(JSON.stringify(jsonModel))
+                )
+            );
+        });
+    });
+
+    describe('BaseModel.link()', () => {
+        it('should establish new sync connection channel', (done) => {
+            let port = 8900;
+            let wss = startWss(() => {
+                let spy = sinon.spy(Channel, 'create');
+                let model = new Model(jsSchemas[0]);
+
+                model.link('WebSocket', 'ws://localhost:' + port);
+
+                expect(spy.called).to.be.true;
+
+                stopWss(wss);
+                done();
+            }, port);
+        }).timeout(5000);
+    });
+
+    describe('BaseModel.publish()', () => {
+        it('should triger data update via channel on publish', (done) => {
+            let port = 8901;
+            let wss = startWss(() => {
+                let model = new Model(jsSchemas[0]);
+                let spy = sinon.spy(model, 'emit');
+
+                model.link('WebSocket', 'ws://localhost:' + port);
+                model.data.firstName = 'John';
+                model.publish();
+
+                expect(spy.calledWith('publish', model)).to.be.true;
+
+                stopWss(wss);
+                done();
+            }, port);
+        }).timeout(5000);
+    });
+
     describe('BaseModel.create()', () => {
         it('should automatically instantiate very basic model from a given ' +
             'schema', () =>
@@ -153,7 +270,7 @@ describe('BaseModel', () => {
 
         it('should log invalidate errors if debug mode is on', () => {
             let oldLevel = Log.LEVEL;
-            let spy = sinon.spy(Log, 'debug');
+            sinon.spy(Log, 'debug');
 
             Log.LEVEL = Log.DEBUG;
 
