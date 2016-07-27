@@ -40,7 +40,7 @@
     "vm": "^0.1.0"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test:node"
   },
   "main": "index.js",
   "dependencies": {

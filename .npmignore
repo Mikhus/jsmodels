@@ -1,7 +1,8 @@
 debug.js
-.idea
+.idea/
 *.log
-coverage
+coverage/
 .eslintrc
 gulpfile.js
 .travis.yml
+lib/gulp/

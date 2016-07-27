@@ -1,5 +1,6 @@
 debug.js
 .idea
 *.log
-node_modules
-coverage
+node_modules/
+coverage/
+dist/

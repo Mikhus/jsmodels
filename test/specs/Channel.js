@@ -67,22 +67,22 @@ describe('Channel', () => {
         it('should throw if invalid channel driver given', () => {
             let port = 8899;
 
-            expect(() => Channel.create(model, 'Unknown', url + port))
+            expect(() => Channel.create('Unknown', url + port, model))
                 .to.throw(Error);
 
-            expect(() => Channel.create(model, () => {}, url + port))
+            expect(() => Channel.create(() => {}, url + port, model))
                 .to.throw(TypeError);
 
-            expect(() => Channel.create(model, {}, url + port))
+            expect(() => Channel.create({}, url + port, model))
                 .to.throw(TypeError);
         });
 
         it('should return existing channel got the given url', (done) => {
             let port = 8899;
             let wss = startWss(() => {
-                let channel = Channel.create(model, 'WebSocket', url + port);
+                let channel = Channel.create('WebSocket', url + port, model);
 
-                expect(Channel.create(model, 'WebSocket', url + port))
+                expect(Channel.create('WebSocket', url + port, model))
                     .to.be.equal(channel);
 
                 stopWss(wss);
