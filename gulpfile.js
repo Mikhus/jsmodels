@@ -5,8 +5,8 @@ const eslint = require('gulp-eslint');
 const KarmaServer = require('karma').Server;
 const browserify = require('browserify');
 const babelify = require('babelify');
+const help = require('gulp-help-doc');
 
-const help = require('./lib/gulp/help');
 const helpers = require('./lib/gulp/helpers');
 
 /**
