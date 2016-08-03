@@ -5,45 +5,10 @@ const Schema = require('../../lib/Schema');
 const Log = require('../../lib/Log');
 const Model = require('../mocks/Model');
 const jsSchemas = require('../data/js-schemas');
-const Channel = require('../../lib/Channel');
 
-if (typeof WebSocket === 'undefined') {
-    var WebSocket = require('ws');
-}
 const isBrowser = typeof window !== 'undefined' &&
     typeof navigator !== 'undefined';
 
-function startWss(fn, port) {
-    let clients = {};
-    let wss = new WebSocket.Server({
-        port: port
-    });
-
-    wss.on('connection', ws => {
-        let id = new Date().getTime() + Math.random();
-
-        clients[id] = ws;
-
-        ws.on('message', message => {
-            let keys = Object.keys(clients);
-            let i = 0, s = keys.length;
-
-            for (; i < s; i++) {
-                clients[keys[i]].send(message);
-            }
-        });
-
-        ws.on('close', () => delete clients[id]);
-    });
-
-    setTimeout(fn, 500);
-
-    return wss;
-}
-
-function stopWss(wss) {
-    setTimeout(() => wss && wss.close && wss.close(), 500);
-}
 
 describe('BaseModel', () => {
     it('should be abstract and throw on attempt to directly instantiate', () =>
@@ -223,42 +188,6 @@ describe('BaseModel', () => {
                 )
             );
         });
-    });
-
-    describe('BaseModel.link()', () => {
-        it('should establish new sync connection channel', (done) => {
-            let port = 8900;
-            let wss = startWss(() => {
-                let spy = sinon.spy(Channel, 'create');
-                let model = new Model(jsSchemas[0]);
-
-                model.link('WebSocket', 'ws://localhost:' + port);
-
-                expect(spy.called).to.be.true;
-
-                stopWss(wss);
-                done();
-            }, port);
-        }).timeout(5000);
-    });
-
-    describe('BaseModel.publish()', () => {
-        it('should triger data update via channel on publish', (done) => {
-            let port = 8901;
-            let wss = startWss(() => {
-                let model = new Model(jsSchemas[0]);
-                let spy = sinon.spy(model, 'emit');
-
-                model.link('WebSocket', 'ws://localhost:' + port);
-                model.data.firstName = 'John';
-                model.publish();
-
-                expect(spy.calledWith('publish', model)).to.be.true;
-
-                stopWss(wss);
-                done();
-            }, port);
-        }).timeout(5000);
     });
 
     describe('BaseModel.create()', () => {
