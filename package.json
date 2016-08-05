@@ -7,7 +7,7 @@
       "email": "mikhus@gmail.com"
     }
   ],
-  "license": "MIT",
+  "license": "ISC",
   "devDependencies": {
     "babel-plugin-transform-object-assign": "^6.8.0",
     "babel-preset-es2015": "^6.9.0",
