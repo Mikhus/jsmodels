@@ -7,7 +7,7 @@ const browserify = require('browserify');
 const babelify = require('babelify');
 const help = require('gulp-help-doc');
 
-const helpers = require('./lib/gulp/helpers');
+const helpers = require('./build/gulp/helpers');
 
 /**
  * Displays usage information for this gulpfile
